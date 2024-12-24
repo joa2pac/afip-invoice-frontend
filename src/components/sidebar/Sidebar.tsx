@@ -1,5 +1,10 @@
 import Image from "next/image";
-import { IoBrowsersOutline, IoCalculator, IoLogoReact } from "react-icons/io5";
+import {
+  IoBrowsersOutline,
+  IoCashOutline,
+  IoDocumentTextOutline,
+  IoLogoReact,
+} from "react-icons/io5";
 import { SidebarMenuItem } from "./SidebarMenuItem";
 
 const menuItems = [
@@ -11,9 +16,15 @@ const menuItems = [
   },
   {
     path: "/dashboard/invoice",
-    icon: <IoCalculator size={40} />,
+    icon: <IoDocumentTextOutline size={40} />,
     title: "Invoice",
     subTitle: "Invoices AFIP",
+  },
+  {
+    path: "/dashboard/facturas",
+    icon: <IoCashOutline size={40} />,
+    title: "Facturas",
+    subTitle: "Facturas Emitidas",
   },
 ];
 
