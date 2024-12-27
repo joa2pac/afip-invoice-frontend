@@ -7,14 +7,42 @@ const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí puedes agregar lógica para autenticar al usuario (API call, etc.)
-    console.log("Logging in with:", { email, password });
+    setLoading(true);
+    setError(""); // Reset error message
 
-    // Redirigir al dashboard
-    router.push("/dashboard");
+    try {
+      const response = await fetch("http://localhost:3000/api/cognito/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const { access_token } = data;
+
+        // Guardar el token JWT en el almacenamiento local
+        localStorage.setItem("access_token", access_token);
+
+        // Redirigir al dashboard
+        router.push("/dashboard");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Error de autenticación");
+      }
+    } catch (error) {
+      setError("Hubo un error en la solicitud");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,7 +60,7 @@ const LoginPage = () => {
               Correo Electrónico
             </label>
             <input
-              type="email"
+              type="string"
               id="email"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="ejemplo@correo.com"
@@ -61,10 +89,12 @@ const LoginPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition"
+            disabled={loading}
           >
-            Iniciar Sesión
+            {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </button>
         </form>
+        {error && <p className="text-red-600 text-center mt-4">{error}</p>}
         <p className="text-sm text-center text-gray-600 mt-4">
           ¿No tienes una cuenta?{" "}
           <a href="/register" className="text-blue-600 hover:underline">

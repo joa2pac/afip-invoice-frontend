@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const response = await fetch("http://localhost:3000/api/facturas", {
+    const response = await fetch("http://localhost:3001/api/facturas", {
       method: "GET",
     });
 
